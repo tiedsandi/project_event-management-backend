@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const logger = require("../utils/logger");
 
 const UserModel = require("../models/user");
+const { jwtSecret } = require("../config/env");
 
 class UserController {
   async signUp(req, res) {
@@ -54,8 +55,9 @@ class UserController {
       {
         id: user._id,
         email: user.email,
+        role: user.role,
       },
-      process.env.JWT_KEY,
+      jwtSecret,
       { expiresIn: "1D" }
     );
 
