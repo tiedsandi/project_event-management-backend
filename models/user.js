@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema(
   {
+    name: { type: String, required: true },
     email: {
       type: String,
       required: true,
@@ -9,6 +10,7 @@ const userSchema = mongoose.Schema(
       match: /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i,
     },
     password: { type: String, required: true },
+    role: { type: String, enum: ["admin", "user"], default: "user" },
   },
   {
     timestamps: true,

@@ -11,8 +11,10 @@ class UserController {
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
       const user = new UserModel({
+        name: req.body.name,
         email: req.body.email,
         password: hashedPassword,
+        role: req.body.role,
       });
 
       const savedUser = await user.save();
