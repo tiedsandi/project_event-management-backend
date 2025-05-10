@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const { getEvents, createEvent } = require("../controllers/eventController");
+const {
+  getEvents,
+  createEvent,
+  getEventById,
+} = require("../controllers/eventController");
 const { validateCreate } = require("../middlewares/eventValidator");
 const { protect, adminOnly } = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/uploadMiddleware");
@@ -15,7 +19,8 @@ router.post(
   validateCreate,
   createEvent
 );
-// router.put("/:id", adminOnly, updateEvent);
-// router.delete("/:id", adminOnly, deleteEvent);
+router.get("/:id", getEventById);
+// router.put("/:id", protect, adminOnly, updateEvent);
+// router.delete("/:id", protect, adminOnly, deleteEvent);
 
 module.exports = router;

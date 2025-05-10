@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const { uploadToCloudinary } = require("../config/cloudinary");
 const Event = require("../models/event");
 
@@ -52,6 +54,18 @@ class EventController {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+  }
+
+  async getEventById(req, res) {
+    const id = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid Event ID format" });
+    }
+
+    const product = await Event.findById(id).lean().exec();
+
+    res.status(200).json(product);
   }
 }
 

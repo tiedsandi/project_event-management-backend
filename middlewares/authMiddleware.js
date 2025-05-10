@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../config/env");
-// const logger = require("../utils/logger");
+const logger = require("../utils/logger");
 
 exports.protect = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -17,7 +17,7 @@ exports.protect = (req, res, next) => {
 };
 
 exports.adminOnly = (req, res, next) => {
-  // logger.info(`${req.user.role}`);
+  logger.info(`${req.user}`);
   if (req.user.role !== "admin")
     return res.status(403).json({ message: "Admin access only" });
   next();
