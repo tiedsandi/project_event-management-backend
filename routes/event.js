@@ -5,8 +5,13 @@ const {
   getEvents,
   createEvent,
   getEventById,
+  updateEvent,
+  deleteEvent,
 } = require("../controllers/eventController");
-const { validateCreate } = require("../middlewares/eventValidator");
+const {
+  validateCreate,
+  validateUpdate,
+} = require("../middlewares/eventValidator");
 const { protect, adminOnly } = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/uploadMiddleware");
 
@@ -20,7 +25,14 @@ router.post(
   createEvent
 );
 router.get("/:id", getEventById);
-// router.put("/:id", protect, adminOnly, updateEvent);
-// router.delete("/:id", protect, adminOnly, deleteEvent);
+router.put(
+  "/:id",
+  protect,
+  adminOnly,
+  upload.single("image"),
+  validateUpdate,
+  updateEvent
+);
+router.delete("/:id", protect, adminOnly, deleteEvent);
 
 module.exports = router;

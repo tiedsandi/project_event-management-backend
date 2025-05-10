@@ -17,7 +17,7 @@ exports.protect = (req, res, next) => {
 };
 
 exports.adminOnly = (req, res, next) => {
-  logger.info(`${req.user}`);
+  // logger.info(`${req.user}`);
   if (req.user.role !== "admin")
     return res.status(403).json({ message: "Admin access only" });
   next();

@@ -31,4 +31,8 @@ async function uploadToCloudinary(buffer, filename) {
   });
 }
 
-module.exports = { uploadToCloudinary };
+async function deleteFromCloudinary(publicId) {
+  return cloudinary.uploader.destroy(publicId);
+}
+
+module.exports = { uploadToCloudinary, deleteFromCloudinary };

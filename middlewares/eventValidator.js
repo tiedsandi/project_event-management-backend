@@ -50,3 +50,55 @@ exports.validateCreate = [
     next();
   },
 ];
+
+exports.validateUpdate = [
+  check("date")
+    .optional()
+    .isDate()
+    .withMessage("Invalid date format")
+    .custom((value) => {
+      const eventDate = new Date(value);
+      const today = new Date();
+      const minDate = new Date(today.setDate(today.getDate() + 3)); // +3 hari
+
+      if (eventDate < minDate) {
+        throw new Error("Event date must be at least 3 days from today");
+      }
+      return true;
+    }),
+  check("title").optional().notEmpty().withMessage("Title cannot be empty"),
+  check("location")
+    .optional()
+    .notEmpty()
+    .withMessage("Location cannot be empty"),
+  check("maximum")
+    .optional()
+    .isInt({ min: 5 })
+    .withMessage("Maximum must be an integer, at least 5"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (req.file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedTypes.includes(req.file.mimetype)) {
+        errors.errors.push({
+          param: "image",
+          msg: "Invalid image format (jpg, jpeg, png only)",
+        });
+      }
+
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (req.file.size > maxSize) {
+        errors.errors.push({
+          param: "image",
+          msg: "Image size must be under 5MB",
+        });
+      }
+    }
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
