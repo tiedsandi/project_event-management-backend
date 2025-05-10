@@ -23,9 +23,9 @@ class EventController {
 
     res.status(200).json({
       page: page,
-      results: datas,
       total_pages: Math.ceil(totalDatas / limit),
       total_results: totalDatas,
+      results: datas,
     });
   }
 

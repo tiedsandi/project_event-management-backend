@@ -3,6 +3,7 @@ const cors = require("cors");
 const logger = require("./utils/logger");
 const userRoutes = require("./routes/user");
 const eventRoutes = require("./routes/event");
+const registrationRoutes = require("./routes/registration");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 // Rute utama
 app.use("/users", userRoutes);
 app.use("/events", eventRoutes);
+app.use("/registration", registrationRoutes);
 
 // 404 handler
 app.use((req, res, next) => {
