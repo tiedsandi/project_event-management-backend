@@ -15,7 +15,7 @@ const options = {
         description: "Local server",
       },
       {
-        url: "https://yourapp-production.railway.app",
+        url: "https://projectevent-management-backend-production.up.railway.app/",
         description: "Production server",
       },
     ],
