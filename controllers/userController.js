@@ -67,6 +67,26 @@ class UserController {
       token: token,
     });
   }
+
+  async getMe(req, res) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Token not provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+      const decoded = jwt.verify(token, jwtSecret); // pastikan JWT_SECRET ada di .env
+
+      // Bisa langsung return payload karena semua data udah ada di token
+      const { id, email, role } = decoded;
+      return res.status(200).json({ id, email, role });
+    } catch (err) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+  }
 }
 
 module.exports = new UserController();
