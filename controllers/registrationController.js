@@ -1,7 +1,19 @@
 const Event = require("../models/event");
+
 const Registration = require("../models/registration");
 
 class Registeration {
+  async getRegistration(req, res) {
+    const eventId = req.params.eventId;
+
+    const registrations = await Registration.find({ event: eventId })
+      .populate("user")
+      .lean()
+      .exec();
+
+    res.status(200).json({ success: true, data: registrations });
+  }
+
   async registerEvent(req, res) {
     const userId = req.user.id;
     const eventId = req.params.eventId;

@@ -3,11 +3,13 @@ const router = express.Router();
 const {
   registerEvent,
   cancelRegistration,
+  getRegistration,
 } = require("../controllers/registrationController");
 const { protect } = require("../middlewares/authMiddleware");
 
 router.post("/:eventId/register", protect, registerEvent);
 router.post("/:eventId/cancel", protect, cancelRegistration);
+router.get("/:eventId", protect, getRegistration);
 
 module.exports = router;
 
