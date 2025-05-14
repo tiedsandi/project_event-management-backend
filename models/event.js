@@ -8,7 +8,11 @@ const eventSchema = new mongoose.Schema(
     maximum: { type: String, required: true },
     location: { type: String, required: true },
     imageUrl: { type: String, required: true },
-    is_active: { type: Number, enum: [0, 1], default: 1 },
+    created_by: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   {
     timestamps: true,

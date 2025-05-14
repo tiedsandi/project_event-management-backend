@@ -5,6 +5,7 @@ const {
   deleteFromCloudinary,
 } = require("../config/cloudinary");
 const Event = require("../models/event");
+const Registration = require("../models/registration");
 const { extractPublicIdFromUrl } = require("../utils/extractPublicId");
 
 class EventController {
@@ -21,16 +22,34 @@ class EventController {
       .lean()
       .exec();
 
+    const eventIds = datas.map((event) => event._id);
+
+    const registrations = await Registration.aggregate([
+      { $match: { event: { $in: eventIds } } },
+      { $group: { _id: "$event", count: { $sum: 1 } } },
+    ]);
+
+    const registrationCountMap = {};
+    registrations.forEach((reg) => {
+      registrationCountMap[reg._id.toString()] = reg.count;
+    });
+
+    const results = datas.map((event) => ({
+      ...event,
+      register_count: registrationCountMap[event._id.toString()] || 0,
+    }));
+
     res.status(200).json({
       page: page,
       total_pages: Math.ceil(totalDatas / limit),
       total_results: totalDatas,
-      results: datas,
+      results: results,
     });
   }
 
   async createEvent(req, res) {
     try {
+      const userId = req.user.id;
       const { title, description, date, maximum, location } = req.body;
 
       if (!req.file) {
@@ -50,6 +69,7 @@ class EventController {
         maximum,
         location,
         imageUrl,
+        created_by: userId,
       });
 
       await event.save();
@@ -78,7 +98,7 @@ class EventController {
 
   async updateEvent(req, res) {
     const id = req.params.id;
-
+    const userId = req.user.id;
     try {
       const { title, description, date, maximum, location } = req.body;
       const event = await Event.findById(id);
@@ -108,6 +128,7 @@ class EventController {
       event.maximum = maximum || event.maximum;
       event.location = location || event.location;
       event.imageUrl = imageUrl;
+      event.created_by = userId;
 
       const updatedEvent = await event.save();
 
