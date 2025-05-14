@@ -111,7 +111,13 @@ class EventController {
       res.status(400).json({ message: "Event not found" });
     }
 
-    res.status(200).json(event);
+    const registrationCount = await Registration.countDocuments({ event: id });
+    const eventWithCount = {
+      ...event,
+      register_count: registrationCount,
+    };
+
+    res.status(200).json(eventWithCount);
   }
 
   async updateEvent(req, res) {
