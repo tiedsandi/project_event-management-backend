@@ -11,16 +11,18 @@ const { extractPublicIdFromUrl } = require("../utils/extractPublicId");
 class EventController {
   async getEvents(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 6;
     const skip = (page - 1) * limit;
 
-    const totalDatas = await Event.countDocuments().exec();
+    const today = new Date();
+
+    // const totalDatas = await Event.countDocuments().exec();
     const datas = await Event.find()
       // .select("name price _id createdAt productImage updatedAt")
-      .skip(skip)
-      .limit(limit)
-      .lean()
-      .exec();
+      // .skip(skip)
+      // .limit(limit)
+      .lean();
+    // .exec();
 
     const eventIds = datas.map((event) => event._id);
 
@@ -34,16 +36,32 @@ class EventController {
       registrationCountMap[reg._id.toString()] = reg.count;
     });
 
-    const results = datas.map((event) => ({
+    const eventsWithCount = datas.map((event) => ({
       ...event,
       register_count: registrationCountMap[event._id.toString()] || 0,
     }));
+
+    const sortedEvents = [...eventsWithCount].sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      const isPastA = dateA < today;
+      const isPastB = dateB < today;
+
+      if (isPastA !== isPastB) {
+        return isPastA ? 1 : -1; // yang lewat ke belakang
+      }
+
+      return dateA - dateB;
+    });
+
+    const totalDatas = sortedEvents.length;
+    const paginated = sortedEvents.slice(skip, skip + limit);
 
     res.status(200).json({
       page: page,
       total_pages: Math.ceil(totalDatas / limit),
       total_results: totalDatas,
-      results: results,
+      results: paginated,
     });
   }
 
