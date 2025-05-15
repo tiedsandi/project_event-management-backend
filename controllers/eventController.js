@@ -195,7 +195,7 @@ class EventController {
       events = registrations.map((reg) => reg.event);
     }
 
-    res.status(200).json(registrations);
+    res.status(200).json(events);
   }
 }
 
