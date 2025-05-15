@@ -8,22 +8,37 @@ const { jwtSecret } = require("../config/env");
 class UserController {
   async signUp(req, res) {
     try {
+      const { name, email, password, role } = req.body;
+
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
       const user = new UserModel({
-        name: req.body.name,
-        email: req.body.email,
+        name,
+        email,
         password: hashedPassword,
-        role: req.body.role,
+        role,
       });
 
       const savedUser = await user.save();
 
-      res.status(201).json({ message: "User registered", user: savedUser });
+      // ===> Langsung generate JWT token seperti login
+      const token = jwt.sign(
+        {
+          id: savedUser._id,
+          email: savedUser.email,
+          role: savedUser.role,
+        },
+        jwtSecret,
+        { expiresIn: "1d" }
+      );
+
+      res.status(201).json({
+        message: "User registered and logged in",
+        token: token,
+      });
     } catch (error) {
       if (error.code === 11000 && error.keyPattern.email) {
-        // logger.error({ error }, "Error detail");
         return res.status(400).json({ message: "Email has used" });
       }
       logger.error({ error }, "Error detail");
