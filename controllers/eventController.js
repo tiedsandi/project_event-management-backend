@@ -180,6 +180,23 @@ class EventController {
 
     res.status(200).json({ message: "Event deleted successfully" });
   }
+
+  async myEvents(req, res) {
+    const userId = req.user.id;
+    const role = req.user.role;
+
+    let events;
+    if (role === "admin") {
+      events = await Event.find({ created_by: userId }).exec();
+    } else if (role === "user") {
+      const registrations = await Registration.find({ user: userId })
+        .populate("event")
+        .exec();
+      events = registrations.map((reg) => reg.event);
+    }
+
+    res.status(200).json(registrations);
+  }
 }
 
 module.exports = new EventController();

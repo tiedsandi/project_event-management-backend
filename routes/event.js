@@ -7,6 +7,7 @@ const {
   getEventById,
   updateEvent,
   deleteEvent,
+  myEvents,
 } = require("../controllers/eventController");
 const {
   validateCreate,
@@ -16,6 +17,7 @@ const { protect, adminOnly } = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/uploadMiddleware");
 
 router.get("/", getEvents);
+router.get("/my-events", protect, myEvents);
 router.post(
   "/",
   protect,
