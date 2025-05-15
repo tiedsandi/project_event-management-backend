@@ -22,12 +22,12 @@ class UserController {
 
       const savedUser = await user.save();
 
-      // ===> Langsung generate JWT token seperti login
       const token = jwt.sign(
         {
           id: savedUser._id,
           email: savedUser.email,
           role: savedUser.role,
+          name: savedUser.name,
         },
         jwtSecret,
         { expiresIn: "1d" }
@@ -71,6 +71,7 @@ class UserController {
         id: user._id,
         email: user.email,
         role: user.role,
+        name: user.name,
       },
       jwtSecret,
       { expiresIn: "1D" }
@@ -93,11 +94,10 @@ class UserController {
     const token = authHeader.split(" ")[1];
 
     try {
-      const decoded = jwt.verify(token, jwtSecret); // pastikan JWT_SECRET ada di .env
+      const decoded = jwt.verify(token, jwtSecret);
 
-      // Bisa langsung return payload karena semua data udah ada di token
-      const { id, email, role } = decoded;
-      return res.status(200).json({ id, email, role });
+      const { id, email, role, name } = decoded;
+      return res.status(200).json({ id, email, role, name });
     } catch (err) {
       return res.status(401).json({ message: "Invalid or expired token" });
     }

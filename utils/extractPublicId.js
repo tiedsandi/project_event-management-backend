@@ -3,7 +3,7 @@ function extractPublicIdFromUrl(url) {
   const parts = url.split("/");
   const filename = parts[parts.length - 1];
   const publicId = filename.split(".")[0];
-  return `events/${publicId}`; // karena kamu simpan di folder 'events'
+  return `events/${publicId}`;
 }
 
 module.exports = { extractPublicIdFromUrl };
