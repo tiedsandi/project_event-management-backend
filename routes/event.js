@@ -50,22 +50,22 @@ module.exports = router;
  * @swagger
  * /events:
  *   get:
- *     summary: Get all events (paginated)
+ *     summary: Get paginated list of events
  *     tags: [Events]
  *     parameters:
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number
+ *         description: Page number (default 1)
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of items per page
+ *         description: Items per page (default 6)
  *     responses:
  *       200:
- *         description: List of events
+ *         description: Paginated list of events
  *         content:
  *           application/json:
  *             schema:
@@ -121,6 +121,16 @@ module.exports = router;
  *     responses:
  *       201:
  *         description: Event created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Event created
+ *                 event:
+ *                   $ref: '#/components/schemas/Event'
  *       400:
  *         description: Bad request (e.g., missing image)
  *       500:
@@ -131,7 +141,7 @@ module.exports = router;
  * @swagger
  * /events/{id}:
  *   get:
- *     summary: Get event by ID
+ *     summary: Get single event by ID
  *     tags: [Events]
  *     parameters:
  *       - in: path
@@ -139,17 +149,22 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
+ *         description: Event ID
  *     responses:
  *       200:
  *         description: Event detail
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Event'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Event'
+ *                 - type: object
+ *                   properties:
+ *                     register_count:
+ *                       type: integer
+ *                       description: Total number of registrations for this event
  *       400:
- *         description: Invalid Event ID
- *       404:
- *         description: Event not found
+ *         description: Invalid ID or Event not found
  */
 
 /**
@@ -215,4 +230,25 @@ module.exports = router;
  *         description: Event deleted successfully
  *       404:
  *         description: Event not found
+ */
+
+/**
+ * @swagger
+ * /events/my-events:
+ *   get:
+ *     summary: Get events based on user role (admin sees created events, user sees registered events)
+ *     tags: [Events]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of events based on user role
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Event'
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
  */

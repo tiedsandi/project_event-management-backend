@@ -17,6 +17,13 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.send(`
+    <h1>Welcome to Event Management API</h1>
+    <p>Visit <a href="/api-docs">API Documentation</a> to explore the endpoints.</p>
+  `);
+});
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use("/users", userRoutes);

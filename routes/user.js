@@ -61,8 +61,10 @@ module.exports = router;
  *               properties:
  *                 message:
  *                   type: string
- *                 user:
- *                   $ref: '#/components/schemas/User'
+ *                   example: User registered and logged in
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR...
  *       400:
  *         description: Email has used
  *       500:
@@ -109,4 +111,32 @@ module.exports = router;
  *         description: Invalid password
  *       404:
  *         description: Email not found
+ */
+
+/**
+ * @swagger
+ * /users/me:
+ *   get:
+ *     summary: Get current logged-in user info
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User info retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *       401:
+ *         description: Token not provided or invalid
  */

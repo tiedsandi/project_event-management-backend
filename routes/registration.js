@@ -74,3 +74,38 @@ module.exports = router;
  *       404:
  *         description: No active registration found
  */
+
+/**
+ * @swagger
+ * /registration/{eventId}:
+ *   get:
+ *     summary: Get all registrations for a specific event
+ *     tags: [Registrations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The event ID to retrieve registrations for
+ *     responses:
+ *       200:
+ *         description: List of registrations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/RegistrationPopulated'
+ *       400:
+ *         description: Invalid event ID format
+ *       404:
+ *         description: Event not found
+ */
